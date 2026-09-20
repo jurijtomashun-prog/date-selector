@@ -8,8 +8,8 @@ const STORAGE_KEY = 'date-selector:v1'
 
 const allowed = {
   character: ['Татьяна', 'Таня', 'Танюха'],
-  plan: ['trip', 'party', 'movie', 'gastro'],
-  castle: ['jaunmoku', 'rundale', 'birini'],
+  plan: ['trip', 'party', 'movie', 'karaoke', 'gastro', 'custom'],
+  castle: ['jaunmoku', 'rundale', 'birini', 'daugavpils'],
   movieLocation: ['hers', 'yura', 'car'],
   movie: ['snatch', 'scary-movie', 'dont-menace', 'eurotrip'],
   food: [
@@ -42,7 +42,8 @@ function restoreState(): InvitationState {
       !isNullableAllowed(value.movieLocation, allowed.movieLocation) ||
       !isNullableAllowed(value.movie, allowed.movie) ||
       !isNullableAllowed(value.food, allowed.food) ||
-      typeof value.customFood !== 'string'
+      typeof value.customFood !== 'string' ||
+      typeof value.customPlanText !== 'string'
     ) {
       return initialInvitationState
     }

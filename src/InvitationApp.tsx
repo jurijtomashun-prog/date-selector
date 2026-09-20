@@ -9,6 +9,8 @@ import {
   Mail,
   MapPinned,
   Martini,
+  Mic,
+  PenLine,
   RotateCcw,
   Sparkles,
   Star,
@@ -37,11 +39,12 @@ const weekdays = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс']
 function detailsComplete(state: InvitationState) {
   if (state.plan === 'trip') return Boolean(state.castle)
   if (state.plan === 'movie') return Boolean(state.movieLocation && state.movie)
+  if (state.plan === 'custom') return Boolean(state.customPlanText.trim())
   return Boolean(state.plan)
 }
 
 function foodComplete(state: InvitationState) {
-  if (state.plan === 'gastro') return true
+  if (state.plan === 'gastro' || state.plan === 'custom') return true
   return Boolean(state.food && (state.food !== 'custom' || state.customFood.trim()))
 }
 
@@ -91,11 +94,12 @@ function Choice({ selected, title, description, icon, onClick }: {
   )
 }
 
-function StepHeader({ eyebrow, title, copy }: { eyebrow: string; title: string; copy?: string }) {
+function StepHeader({ eyebrow, title, tagline, copy }: { eyebrow: string; title: string; tagline?: string; copy?: string }) {
   return (
     <header className="step-header">
       <span className="eyebrow">{eyebrow}</span>
       <h1>{title}</h1>
+      {tagline && <p className="tagline">{tagline}</p>}
       {copy && <p>{copy}</p>}
     </header>
   )
@@ -149,7 +153,7 @@ export default function InvitationApp() {
   const [notice, setNotice] = useState('')
   const [consentSuccess, setConsentSuccess] = useState(false)
   const [noAttempts, setNoAttempts] = useState(0)
-  const [noPosition, setNoPosition] = useState({ left: 64, top: 58 })
+  const [noPosition, setNoPosition] = useState({ left: 80, top: 12 })
   const [shared, setShared] = useState(false)
 
   const foodOptions = useMemo(
@@ -159,33 +163,39 @@ export default function InvitationApp() {
 
   const goBack = () => {
     setNotice('')
-    if (step === 6) setStep(state.plan === 'gastro' ? 3 : 5)
-    else if (step === 5) setStep(state.plan === 'trip' || state.plan === 'movie' ? 4 : 3)
-    else if (step > 0) setStep((step - 1) as Step)
+    if (step === 6) {
+      if (state.plan === 'gastro') setStep(3)
+      else if (state.plan === 'custom') setStep(4)
+      else setStep(5)
+    } else if (step === 5) {
+      setStep(state.plan === 'trip' || state.plan === 'movie' ? 4 : 3)
+    } else if (step > 0) {
+      setStep((step - 1) as Step)
+    }
   }
 
   const chooseCharacter = (character: InvitationState['character']) => {
-    update({ character, consented: false, date: null, plan: null, castle: null, movieLocation: null, movie: null, food: null, customFood: '' })
+    update({ character, consented: false, date: null, plan: null, castle: null, movieLocation: null, movie: null, food: null, customFood: '', customPlanText: '' })
     window.setTimeout(() => setStep(1), 280)
   }
 
   const acceptDate = (date: string, message?: string, selectable = true) => {
     setNotice(message ?? '')
     if (selectable) {
-      update({ date, plan: null, castle: null, movieLocation: null, movie: null, food: null, customFood: '' })
+      update({ date, plan: null, castle: null, movieLocation: null, movie: null, food: null, customFood: '', customPlanText: '' })
     }
   }
 
   const selectPlan = (plan: PlanId) => {
-    update({ plan, castle: null, movieLocation: null, movie: null, food: null, customFood: '' })
+    update({ plan, castle: null, movieLocation: null, movie: null, food: null, customFood: '', customPlanText: '' })
     setNotice('')
   }
 
   const evadeNo = (pointerType: string) => {
     if (pointerType !== 'mouse' || !window.matchMedia('(pointer: fine)').matches) return
     const positions = [
-      { left: 8, top: 12 }, { left: 72, top: 10 }, { left: 10, top: 76 },
-      { left: 75, top: 72 }, { left: 43, top: 7 }, { left: 45, top: 80 },
+      { left: 6, top: 10 }, { left: 78, top: 8 }, { left: 8, top: 78 },
+      { left: 80, top: 76 }, { left: 4, top: 44 }, { left: 84, top: 46 },
     ]
     setNoPosition(positions[Math.floor(Math.random() * positions.length)])
     setNoAttempts((value) => value + 1)
@@ -194,10 +204,11 @@ export default function InvitationApp() {
   const rejectOnTouch = () => {
     setNotice('Неправильный ответ')
     setNoAttempts((value) => value + 1)
-    setNoPosition((value) => ({
-      left: value.left > 45 ? Math.max(8, value.left - 16) : Math.min(76, value.left + 18),
-      top: value.top > 50 ? value.top - 12 : value.top + 14,
-    }))
+    const positions = [
+      { left: 6, top: 10 }, { left: 78, top: 8 }, { left: 8, top: 78 },
+      { left: 80, top: 76 }, { left: 4, top: 44 }, { left: 84, top: 46 },
+    ]
+    setNoPosition(positions[Math.floor(Math.random() * positions.length)])
   }
 
   const sayYes = () => {
@@ -238,7 +249,9 @@ export default function InvitationApp() {
     trip: <MapPinned size={22} />,
     party: <Martini size={22} />,
     movie: <Film size={22} />,
+    karaoke: <Mic size={22} />,
     gastro: <Utensils size={22} />,
+    custom: <PenLine size={22} />,
   }
 
   return (
@@ -260,7 +273,7 @@ export default function InvitationApp() {
         <div className="step" key={`${step}-${consentSuccess}`}>
           {step === 0 && (
             <>
-              <StepHeader eyebrow="Очень официальный сервис" title="Свиданко-селектор" copy="Протокол выбора прекрасного вечера. Ошибиться почти невозможно." />
+              <StepHeader eyebrow="Очень официальный сервис" title="Power Dating" tagline="Dating as a Service (DaaS)" copy="Протокол выбора прекрасного вечера. Ошибиться почти невозможно." />
               <div className="section-label">Выбор персонажа</div>
               <div className="character-list">
                 {characters.map((character) => (
@@ -315,18 +328,29 @@ export default function InvitationApp() {
               <div className="choice-list plan-list">
                 {plans.map((plan) => <Choice key={plan.id} selected={state.plan === plan.id} title={plan.title} description={plan.description} icon={planIcons[plan.id]} onClick={() => selectPlan(plan.id)} />)}
               </div>
-              {state.plan && <button type="button" className="primary continue" onClick={() => setStep(state.plan === 'gastro' ? 6 : state.plan === 'party' ? 5 : 4)}>План утверждён <Check size={18} /></button>}
+              {state.plan && (
+                <button
+                  type="button"
+                  className="primary continue"
+                  onClick={() => {
+                    if (state.plan === 'gastro') setStep(6)
+                    else if (state.plan === 'custom') setStep(4)
+                    else if (state.plan === 'party' || state.plan === 'karaoke') setStep(5)
+                    else setStep(4)
+                  }}
+                >
+                  План утверждён <Check size={18} />
+                </button>
+              )}
             </>
           )}
 
           {step === 4 && state.plan === 'trip' && (
             <>
-              <StepHeader eyebrow="Выездная комиссия" title="Куда держим путь?" copy="Три замка и одна географическая провокация." />
+              <StepHeader eyebrow="Выездная комиссия" title="Куда держим путь?" copy="Четыре направления, одно из них — с подвохом." />
               <div className="choice-list">
-                {castles.map((castle) => <Choice key={castle.id} selected={state.castle === castle.id} title={castle.label} onClick={() => { update({ castle: castle.id, food: null }); setNotice('') }} />)}
-                <button type="button" className="choice joke-choice" onClick={() => setNotice('Даже не думай о Даугавпилсе! Выбирай замок :)')}><span className="choice-copy"><strong>Нет, даже не думай о Даугавпилсе!</strong></span></button>
+                {castles.map((castle) => <Choice key={castle.id} selected={state.castle === castle.id} title={castle.label} description={castle.description} onClick={() => update({ castle: castle.id, food: null })} />)}
               </div>
-              {notice && <div className="notice wrong">{notice}</div>}
               {state.castle && <button type="button" className="primary continue" onClick={() => setStep(5)}>Погнали <MapPinned size={18} /></button>}
             </>
           )}
@@ -350,6 +374,17 @@ export default function InvitationApp() {
                 </div>
               </fieldset>
               {detailsComplete(state) && <button type="button" className="primary continue" onClick={() => setStep(5)}>Кино выбрано <Film size={18} /></button>}
+            </>
+          )}
+
+          {step === 4 && state.plan === 'custom' && (
+            <>
+              <StepHeader eyebrow="Импровизация приветствуется" title="Твой сценарий" copy="Опиши, что хочется сделать — согласуем детали лично." />
+              <label className="custom-field">
+                <span>Твой план на вечер</span>
+                <textarea value={state.customPlanText} onChange={(event) => update({ customPlanText: event.target.value })} placeholder="Например: пикник у канала и потом мороженое" maxLength={220} autoFocus />
+              </label>
+              {detailsComplete(state) && <button type="button" className="primary continue" onClick={() => setStep(6)}>План принят <Sparkles size={18} /></button>}
             </>
           )}
 

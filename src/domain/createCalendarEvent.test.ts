@@ -13,6 +13,7 @@ const state: InvitationState = {
   movie: 'eurotrip',
   food: 'custom',
   customFood: 'Хачапури, лимонад и торт',
+  customPlanText: '',
 }
 
 describe('createCalendarEvent', () => {

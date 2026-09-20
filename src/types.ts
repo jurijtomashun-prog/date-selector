@@ -1,7 +1,7 @@
 export type CharacterName = 'Татьяна' | 'Таня' | 'Танюха'
 
-export type PlanId = 'trip' | 'party' | 'movie' | 'gastro'
-export type CastleId = 'jaunmoku' | 'rundale' | 'birini'
+export type PlanId = 'trip' | 'party' | 'movie' | 'karaoke' | 'gastro' | 'custom'
+export type CastleId = 'jaunmoku' | 'rundale' | 'birini' | 'daugavpils'
 export type MovieLocationId = 'hers' | 'yura' | 'car'
 export type MovieId = 'snatch' | 'scary-movie' | 'dont-menace' | 'eurotrip'
 
@@ -27,6 +27,7 @@ export interface InvitationState {
   movie: MovieId | null
   food: FoodId | null
   customFood: string
+  customPlanText: string
 }
 
 export const initialInvitationState: InvitationState = {
@@ -39,4 +40,5 @@ export const initialInvitationState: InvitationState = {
   movie: null,
   food: null,
   customFood: '',
+  customPlanText: '',
 }

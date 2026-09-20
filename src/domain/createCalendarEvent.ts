@@ -45,6 +45,7 @@ export function describeInvitation(state: InvitationState) {
   }
   if (state.movie) lines.push(`Кино: ${labelFor(movies, state.movie)}`)
   if (state.plan === 'movie') lines.push('Напиток: Аперольчик')
+  if (state.plan === 'custom' && state.customPlanText) lines.push(`Детали: ${state.customPlanText}`)
   if (state.food) {
     const food = state.food === 'custom' ? state.customFood : foodLabels[state.food]
     lines.push(`Навернуть бы: ${food}`)

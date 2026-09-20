@@ -27,17 +27,28 @@ export const plans: Array<{ id: PlanId; title: string; description: string }> = 
     description: 'Плед, экран и очень серьёзный киноотбор.',
   },
   {
+    id: 'karaoke',
+    title: 'Караоке-вечер',
+    description: 'Микрофон, кураж и минимум капли совести. Голосовые данные не разглашаются.',
+  },
+  {
     id: 'gastro',
     title: 'Развратный гастро-тур',
     description:
       'Двигаемся от точки до точки по городу, принимаем разные увеселительные напитки и еду. Тут уж кто сколько осилит...',
   },
+  {
+    id: 'custom',
+    title: 'Твой вариант',
+    description: 'Опиши свой план — обсудим и, скорее всего, согласимся.',
+  },
 ]
 
-export const castles: Array<{ id: CastleId; label: string }> = [
+export const castles: Array<{ id: CastleId; label: string; description?: string }> = [
   { id: 'jaunmoku', label: 'Jaunmoku pils' },
   { id: 'rundale', label: 'Rundāles pils' },
   { id: 'birini', label: 'Bīriņu pils' },
+  { id: 'daugavpils', label: 'Даугавпилс', description: 'Нуууу только если попросишь :) ' },
 ]
 
 export const movieLocations: Array<{ id: MovieLocationId; label: string }> = [
@@ -81,7 +92,7 @@ export const foodLabels: Record<FoodId, string> = {
 }
 
 export function getFoodOptions(plan: PlanId, castle: CastleId | null): FoodId[] {
-  if (plan === 'party') {
+  if (plan === 'party' || plan === 'karaoke') {
     return ['big-tasty', 'before-party', 'solar-energy']
   }
   if (plan === 'movie') {
