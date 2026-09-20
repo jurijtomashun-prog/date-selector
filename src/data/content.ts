@@ -9,6 +9,12 @@ import type {
 
 export const characters: CharacterName[] = ['Татьяна', 'Таня', 'Танюха']
 
+export const characterTitles: Record<CharacterName, string> = {
+  Татьяна: 'Верховный судья вечера',
+  Таня: 'Тайный организатор веселья',
+  Танюха: 'Королева внезапных решений',
+}
+
 export const plans: Array<{ id: PlanId; title: string; description: string }> = [
   {
     id: 'trip',

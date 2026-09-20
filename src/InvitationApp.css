@@ -94,6 +94,7 @@
 .step { position: relative; z-index: 1; animation: step-in .46s cubic-bezier(.22,.75,.25,1) both; }
 .step-header { max-width: 620px; margin: 46px auto 32px; text-align: center; }
 .eyebrow, .section-label { color: var(--rose-dark); font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .12em; }
+.persona-badge { max-width: 340px; margin: -14px auto 24px; padding: 7px 16px; color: var(--rose-dark); font-size: 13px; font-weight: 600; text-align: center; background: var(--rose-soft); border-radius: 999px; }
 .step-header h1 { margin: 10px 0 12px; font-family: 'Comfortaa', sans-serif; font-size: 34px; line-height: 1.2; letter-spacing: 0; color: var(--ink); }
 .tagline { margin: -4px 0 12px; color: var(--rose-dark); font-family: 'Comfortaa', sans-serif; font-weight: 700; font-size: 13px; letter-spacing: .06em; text-transform: uppercase; }
 .step-header p { max-width: 520px; margin: 0 auto; color: var(--muted); line-height: 1.55; }

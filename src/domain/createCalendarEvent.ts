@@ -1,5 +1,6 @@
 import {
   castles,
+  characterTitles,
   foodLabels,
   getMovieLocationLabel,
   labelFor,
@@ -34,6 +35,7 @@ const foldLine = (line: string) => {
 export function describeInvitation(state: InvitationState) {
   const lines = [
     `Персонаж: ${state.character}`,
+    `Титул: ${state.character ? characterTitles[state.character] : ''}`,
     `План: ${labelFor(plans, state.plan)}`,
   ]
 

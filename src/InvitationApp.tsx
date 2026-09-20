@@ -19,6 +19,7 @@ import {
 import './InvitationApp.css'
 import {
   castles,
+  characterTitles,
   characters,
   foodLabels,
   getFoodOptions,
@@ -289,6 +290,7 @@ export default function InvitationApp() {
           {step === 1 && !consentSuccess && (
             <>
               <StepHeader eyebrow="Главный вопрос" title={`${state.character}, идём на свиданку?`} copy="Комиссия уже рассмотрела заявку и настроена оптимистично." />
+              {state.character && <p className="persona-badge">Статус: {characterTitles[state.character]}</p>}
               <div className="consent-arena">
                 <button type="button" className="primary yes-button" onClick={sayYes}><Heart size={19} fill="currentColor" /> Да, конечно</button>
                 {noAttempts < 7 && (
